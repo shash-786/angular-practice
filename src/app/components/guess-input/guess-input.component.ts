@@ -32,15 +32,16 @@ export class GuessInputComponent {
   // Effect to clear inputs when the disabled state changes (e.g., new game starts)
   // and the row becomes enabled again.
   // This helps reset the input boxes visually.
+  // Also clears inputs if feedback is removed (e.g., invalid guess retry)
   private clearInputsEffect = effect(() => {
       const isDisabled = this.disabled();
-      // If the row becomes enabled (and was previously disabled, or on initial load)
-      // and there are existing values, clear them.
-      // Add a check to ensure this doesn't interfere with feedback display.
-      // Only clear if the row is enabled AND there's no feedback applied yet.
-      if (!isDisabled && !this.feedbacks()) {
-          this.guessLetters.forEach(sig => sig.set(""));
-          console.log("Cleared inputs due to disabled state change.");
+      const currentFeedback = this.feedbacks();
+
+      // Clear inputs if the row becomes enabled AND has no feedback
+      // This handles new game start and potentially retrying an invalid guess
+      if (!isDisabled && !currentFeedback) {
+          this.clearInputs(); // Use the updated clearInputs method
+          console.log("Cleared inputs due to state change.");
       }
   });
 
@@ -53,7 +54,10 @@ export class GuessInputComponent {
    */
   handleInput(event: Event, currentIndex: number): void {
      const inputElement = event.target as HTMLInputElement;
-     const value = inputElement.value.toUpperCase(); // Convert to uppercase immediately
+     // Restrict input to a single character and convert to uppercase
+     const value = inputElement.value.slice(-1).toUpperCase();
+     inputElement.value = value; // Update the input element's value directly
+
      this.guessLetters[currentIndex].set(value); // Update the signal
 
      console.log(`Input at index ${currentIndex}: ${value}`);
@@ -92,14 +96,14 @@ export class GuessInputComponent {
                   const prevInput = formElement.nativeElement.querySelectorAll('input')[currentIndex - 1] as HTMLInputElement;
                   if (prevInput) {
                       prevInput.focus();
-                      // Optional: Clear the value of the previous input when moving back
-                      // this.guessLetters[currentIndex - 1].set("");
+                      // Optional: Clear the value of the current input when moving back
+                      // this.guessLetters[currentIndex].set(""); // This might happen automatically
                   }
               }
           }
       }
-      // Optional: Prevent entering more than one character
-      if (event.key.length === 1 && this.guessLetters[currentIndex]().length >= 1) {
+      // Prevent entering more than one character per input box
+      if (event.key.length === 1 && this.guessLetters[currentIndex]().length >= 1 && event.key !== 'Backspace' && !event.metaKey && !event.ctrlKey && !event.altKey) {
            event.preventDefault();
       }
   }
@@ -121,6 +125,27 @@ export class GuessInputComponent {
     }
   }
 
+   /**
+    * Clears the input values in this guess row.
+    * Called by the parent component (WordleComponent) when needed (e.g., invalid guess).
+    */
+   clearInputs(): void {
+       // Reset the signals
+       this.guessLetters.forEach(sig => sig.set(""));
+
+       // Explicitly clear the native input element values
+       const formElement = this.form();
+       if (formElement) {
+           const inputs = formElement.nativeElement.querySelectorAll('input') as NodeListOf<HTMLInputElement>;
+           inputs.forEach(input => input.value = "");
+       }
+
+
+       // Optionally, focus the first input after clearing
+       this.focusToFirstInput();
+   }
+
+
   /**
    * Focuses the first input element in this component's form.
    * Called by the parent component (WordleComponent) to move focus to this row.
@@ -128,12 +153,16 @@ export class GuessInputComponent {
   focusToFirstInput(): void {
     const formElement = this.form();
     if (formElement) {
-      console.log("Focusing first input in guess row.");
+      console.log("Attempting to focus first input in guess row.");
       // Find the first input element within the form
       const firstInput = formElement.nativeElement.querySelector('input') as HTMLInputElement;
       if (firstInput) {
         firstInput.focus();
+      } else {
+          console.warn("First input element not found in the form.");
       }
+    } else {
+        console.warn("Form element reference not available.");
     }
   }
 
