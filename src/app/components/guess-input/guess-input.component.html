@@ -1,0 +1,16 @@
+<form #guessForm class="guess-row">
+    <ng-container *ngFor="let letterSignal of guessLetters; let i = index">
+      <input
+        type="text"
+        maxlength="1"
+        [name]="'letter' + i"
+        [(ngModel)]="letterSignal"
+        (input)="handleInput($event, i)"
+        (keydown)="handleKeydown($event, i)"
+        [disabled]="disabled()"
+        [class]="decideClassFromFeedback(i)"
+        required
+      >
+    </ng-container>
+</form>
+  

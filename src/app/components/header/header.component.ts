@@ -10,5 +10,5 @@ import { TodosService } from '../../services/todos.service';
 })
 
 export class HeaderComponent {
-  title = signal('My first angular App')
+  title = signal('Home')
 }

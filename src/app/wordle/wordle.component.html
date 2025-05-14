@@ -1,0 +1,25 @@
+<div class="wordle-container">
+    <h2>Simple Wordle</h2>
+  
+    <div *ngIf="isGameOver()" class="game-message">
+      <p>{{ gameMessage() }}</p>
+      <button (click)="startNewGame()">Play Again?</button>
+    </div>
+  
+    <div class="guess-grid">
+      <ng-container *ngFor="let i of [].constructor(maxGuesses); let index = index">
+        <app-guess-input
+          [feedbacks]="getFeedbackForAttempt(index)"
+          [disabled]="isInputDisabled(index)"
+          (wordInputted)="submitGuess($event, index)">
+        </app-guess-input>
+      </ng-container>
+    </div>
+  
+    <div *ngIf="!isGameOver()">
+       <button (click)="startNewGame()">Start New Game</button>
+    </div>
+  
+  
+  </div>
+  

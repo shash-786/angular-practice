@@ -14,4 +14,10 @@ export const routes: Routes = [
             return import('./todos/todos.component').then((m) => m.TodosComponent)
         },
     },
+    {
+        path:'wordle',
+        loadComponent: () => {
+            return import('./wordle/wordle.component').then((m) => m.WordleComponent)
+        },
+    },
 ];

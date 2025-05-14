@@ -1,0 +1,70 @@
+/* Styles for a single row of guess inputs */
+.guess-row {
+    display: flex; /* Arrange inputs in a row */
+    justify-content: center; /* Center the inputs horizontally */
+    gap: 5px; /* Space between input boxes */
+    margin-bottom: 5px; /* Space between guess rows */
+  }
+  
+  .guess-row input[type="text"] {
+    width: 40px; /* Fixed width for each letter box */
+    height: 40px; /* Fixed height */
+    text-align: center; /* Center the letter inside the box */
+    font-size: 24px; /* Large font size for the letter */
+    font-weight: bold;
+    border: 2px solid #ccc; /* Default border */
+    border-radius: 4px; /* Slightly rounded corners */
+    text-transform: uppercase; /* Ensure input is uppercase */
+    caret-color: transparent; /* Hide the blinking cursor */
+    outline: none; /* Remove default outline on focus */
+    transition: border-color 0.2s ease-in-out, background-color 0.2s ease-in-out; /* Smooth transitions */
+  }
+  
+  /* Style for the input box when it is focused */
+  .guess-row input[type="text"]:focus {
+    border-color: #555; /* Darker border on focus */
+  }
+  
+  /* Style for disabled input boxes */
+  .guess-row input[type="text"]:disabled {
+    opacity: 0.7; /* Slightly dim disabled inputs */
+    cursor: not-allowed; /* Indicate not clickable */
+  }
+  
+  /* Feedback classes */
+  .guess-row input.red {
+    background-color: #ff6666; /* Red for incorrect letter */
+    border-color: #ff6666;
+    color: white;
+  }
+  
+  .guess-row input.yellow {
+    background-color: #ffff66; /* Yellow for correct letter, wrong position */
+    border-color: #ffff66;
+    color: black; /* Use black text for better contrast on yellow */
+  }
+  
+  .guess-row input.green {
+    background-color: #66cc66; /* Green for correct letter, correct position */
+    border-color: #66cc66;
+    color: white;
+  }
+  
+  /* Ensure feedback colors persist when disabled */
+  .guess-row input[type="text"]:disabled.red {
+      background-color: #ff6666;
+      border-color: #ff6666;
+      color: white;
+  }
+  .guess-row input[type="text"]:disabled.yellow {
+      background-color: #ffff66;
+      border-color: #ffff66;
+       color: black;
+  }
+  .guess-row input[type="text"]:disabled.green {
+      background-color: #66cc66;
+      border-color: #66cc66;
+      color: white;
+  }
+  
+  
